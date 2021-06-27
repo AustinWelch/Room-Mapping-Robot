@@ -1,1 +1,12 @@
 /Debug/
+.ccsproject
+.cproject
+.launches/Room Mapping Robot.launch
+.project
+.settings/org.eclipse.cdt.codan.core.prefs
+.settings/org.eclipse.cdt.debug.core.prefs
+.settings/org.eclipse.core.resources.prefs
+startup_msp432p401r_ccs.c
+system_msp432p401r.c
+targetConfigs/MSP432P401R.ccxml
+targetConfigs/readme.txt
