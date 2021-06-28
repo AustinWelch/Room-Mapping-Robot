@@ -10,3 +10,4 @@ startup_msp432p401r_ccs.c
 system_msp432p401r.c
 targetConfigs/MSP432P401R.ccxml
 targetConfigs/readme.txt
+msp432p401r.cmd
