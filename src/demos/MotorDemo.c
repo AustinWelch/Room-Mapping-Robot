@@ -1,3 +1,4 @@
+#include <Motors/Bumper.h>
 #include "BSP.h"
 #include "Motors/MotorControl.h"
 
@@ -33,26 +34,12 @@ int main(){
 
     while(1){
 
-//        Motor_moveForwardDistance(20, 20);
-        DelayMs(750);
-        Motor_rotateRight(20, 90);
-        DelayMs(750);
-        Motor_rotateLeft(20, 90);
-        DelayMs(750);
-        Motor_rotateRight(20, 180);
-        DelayMs(750);
-        Motor_rotateLeft(20, 180);
-        DelayMs(750);
-        Motor_rotateRight(20, 360);
-        DelayMs(750);
-        Motor_rotateLeft(20, 360);
-        DelayMs(750);
-//        DelayMs(750);
-//        Motor_moveForwardDistance(20, 20);
-//        DelayMs(750);
-//        Motor_moveBackwardDistance(20, 20);
-//        DelayMs(750);
-//        Motor_rotateRight(20, 180);
-//        DelayMs(10000);
+          Motor_moveForwardTime(20, 0);
+
+          while(Motor_getBumperState() == 0);
+
+          Motor_handleBump();
+          Motor_setBumperState(0);
+
     }
 }
