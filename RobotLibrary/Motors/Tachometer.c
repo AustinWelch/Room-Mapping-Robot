@@ -26,22 +26,19 @@ void Tachometer_init(){
     TIMER_A3->CTL = TASSEL__SMCLK | MC__STOP | TAIE;
 
     TIMER_A3->CCTL[0] = CM__RISING | CCIS__CCIA | SCS | CAP | CCIE;
-    //TIMER_A3->CCTL[1] = CM__RISING | CCIS__CCIA | SCS | CAP | CCIE;
+    TIMER_A3->CCTL[1] = CM__RISING | CCIS__CCIA | SCS | CAP | CCIE;
 
     //Enable Interrupts
+    __NVIC_SetPriority(TA3_0_IRQn, 20);
     __NVIC_EnableIRQ(TA3_0_IRQn);
-    //__NVIC_SetVector(TA3_0_IRQn, (uint32_t)Tachometer_rightMotorISR);
-    //__NVIC_SetVector(TA3_N_IRQn, (uint32_t)Tachometer_leftMotorISR);
-    //__NVIC_SetPriority(TA3_0_IRQn, 32);
-   // __NVIC_SetPriority(TA3_N_IRQn, 32);
-    //__NVIC_EnableIRQ(TA3_0_IRQn);
-    //__NVIC_EnableIRQ(TA3_N_IRQn);
+    __NVIC_SetPriority(TA3_N_IRQn, 20);
+    __NVIC_EnableIRQ(TA3_N_IRQn);
 
     //Start Timer
     TIMER_A3->CTL |= MC__UP;
 }
 
-void Tachometer_leftMotorISR(){
+void TA3_N_IRQHandler(){
     TIMER_A3->CCTL[1] &= ~BIT0;
     
     Lcount++;
@@ -82,7 +79,7 @@ void TA3_0_IRQHandler() {//Tachometer_rightMotorISR(){
 void Tachometer_disable(){
     TIMER_A3->CTL |= MC__STOP;
     __NVIC_DisableIRQ(TA3_0_IRQn);
-   // __NVIC_DisableIRQ(TA3_N_IRQn);
+    __NVIC_DisableIRQ(TA3_N_IRQn);
 }
 
 void Tachometer_odometerEnabled(){
@@ -90,6 +87,19 @@ void Tachometer_odometerEnabled(){
 }
 
 void Tachometer_countToTravel(uint32_t count){
-    uint32_t target = count + Rcount;
-    while(Rcount < target); //TODO: replace with mutex
+    uint32_t target = count;
+    uint32_t Rorig = Rcount;
+    uint32_t Lorig = Lcount;
+
+    //TODO: replace with mutex
+    while(1){
+       if(Rcount-Rorig == target)
+           P3->OUT &= ~BIT6;
+
+       if(Lcount-Lorig == target)
+           P3->OUT &= ~BIT7;
+
+       if(Rcount-Rorig >= target && Lcount-Lorig >= target)
+           break;
+    }
 }
