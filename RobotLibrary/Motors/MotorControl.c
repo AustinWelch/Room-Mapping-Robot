@@ -1,10 +1,36 @@
 #include "MotorControl.h"
 #include "Odometer.h"
 #include "Tachometer.h"
+#include "Bumper.h"
 
 /*
     TODO: Replace DelayMs with interrupt
 */
+
+/* Right Motor
+
+        P5.5      P2.6
+     Direction    PWM
+         0         0      Stopped
+         1         0      Stopped
+         0         1      Forward
+         1         1      Backward
+
+     P3.6 is active low right motor sleep
+
+     Left Motor
+
+        P5.4      P2.7
+     Direction    PWM
+         0         0      Stopped
+         1         0      Stopped
+         0         1      Forward
+         1         1      Backward
+
+     P3.7 is active low left motor sleep
+*/
+
+uint8_t bumperState = 0;
 
 void Motor_initialize(){
 
@@ -23,6 +49,7 @@ void Motor_initialize(){
     TIMER_A0->CCTL[3] |= OUTMOD_7;
     TIMER_A0->CCTL[4] |= OUTMOD_7;
 
+    bumper_init();
 }
 
 void Motor_moveForwardTime(uint16_t percentSpeed, uint16_t time){
@@ -80,7 +107,7 @@ void Motor_rotateLeft(uint16_t percentSpeed, uint16_t degrees){
 
     PWM_init(percentSpeed);
 
-    Tachometer_countToTravel((degrees - 6) * 2);
+    Tachometer_countToTravel((degrees - degrees/20) * 2);
 
     Motor_stop();
 }
@@ -92,7 +119,7 @@ void Motor_rotateRight(uint16_t percentSpeed, uint16_t degrees){
 
     PWM_init(percentSpeed);
 
-    Tachometer_countToTravel(degrees * 2);
+    Tachometer_countToTravel((degrees - degrees/20) * 2);
 
     Motor_stop();
 }
@@ -115,4 +142,38 @@ void PWM_init(uint16_t percentSpeed){
     TIMER_A0->CTL |= MC__UP;
 
     Tachometer_init();
+}
+
+void Motor_handleBump(){
+    switch (bumperState) {
+          case BIT0:
+              Motor_rotateLeft(20, 40);
+              break;
+          case BIT2:
+              Motor_rotateLeft(20, 60);
+              break;
+          case BIT3:
+              Motor_rotateLeft(20, 90);
+              break;
+          case BIT5:
+              Motor_rotateRight(20, 90);
+              break;
+          case BIT6:
+              Motor_rotateRight(20, 60);
+              break;
+          case BIT7:
+              Motor_rotateRight(20, 40);
+              break;
+      }
+
+    P4->IFG = 0;
+    P4->IE |= BIT0 | BIT2 | BIT3 | BIT5 | BIT6 | BIT7;
+}
+
+uint8_t Motor_getBumperState(){
+    return bumperState;
+}
+
+void Motor_setBumperState(uint8_t newState){
+    bumperState = newState;
 }
