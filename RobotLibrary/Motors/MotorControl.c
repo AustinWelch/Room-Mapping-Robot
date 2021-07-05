@@ -49,7 +49,7 @@ void Motor_initialize(){
     TIMER_A0->CCTL[3] |= OUTMOD_7;
     TIMER_A0->CCTL[4] |= OUTMOD_7;
 
-    bumper_init();
+    Bumper_init();
 }
 
 void Motor_moveForwardTime(uint16_t percentSpeed, uint16_t time){
