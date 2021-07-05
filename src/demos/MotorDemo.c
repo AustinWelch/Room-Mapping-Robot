@@ -1,6 +1,6 @@
-#include <Motors/Bumper.h>
+#include <Bumper.h>
 #include "BSP.h"
-#include "Motors/MotorControl.h"
+#include "MotorControl.h"
 
 int main(){
 
