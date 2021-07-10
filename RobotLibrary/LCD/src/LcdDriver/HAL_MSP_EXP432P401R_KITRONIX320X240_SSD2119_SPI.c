@@ -129,11 +129,11 @@ void HAL_LCD_initLCD(void)
     //
     // Set the LCD Backlight high to enable
     //
-    GPIO_setAsOutputPin(LCD_PWM_PORT,
-                        LCD_PWM_PIN);
-
-    GPIO_setOutputHighOnPin(LCD_PWM_PORT,
-                            LCD_PWM_PIN);
+//    GPIO_setAsOutputPin(LCD_PWM_PORT,
+//                        LCD_PWM_PIN);
+//
+//    GPIO_setOutputHighOnPin(LCD_PWM_PORT,
+//                            LCD_PWM_PIN);
 
     //
     // Set the LCD control pins to their default values.
