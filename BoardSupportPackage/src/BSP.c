@@ -18,7 +18,15 @@ void BSP_InitBoard()
 	WDT_A_holdTimer();
 
 	/* Initialize Clock */
-	ClockSys_SetMaxFreq();
+	/* 2 flash wait states, VCORE = 1, running off DC-DC, 48 MHz */
+    FlashCtl_setWaitState(FLASH_BANK0, 2);
+    FlashCtl_setWaitState(FLASH_BANK1, 2);
+    PCM_setPowerState(PCM_AM_DCDC_VCORE1);
+    CS_setDCOCenteredFrequency(CS_DCO_FREQUENCY_48);
+    CS_setDCOFrequency(48000000);
+    CS_initClockSignal(CS_MCLK, CS_DCOCLK_SELECT, 1);
+    CS_initClockSignal(CS_SMCLK, CS_DCOCLK_SELECT, 1);
+    CS_initClockSignal(CS_HSMCLK, CS_DCOCLK_SELECT, 1);
 
 	/* Init i2c */
 	//initI2C();
