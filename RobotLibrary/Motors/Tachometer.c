@@ -42,7 +42,9 @@ void TA3_N_IRQHandler(){
     TIMER_A3->CCTL[1] &= ~BIT0;
     
     Lcount++;
-    if(Lcount - LcountPrev == 20 || odometerJustEnabled){
+    if(Lcount - LcountPrev == 20){// || odometerJustEnabled){
+        //odometerJustEnabled = false;
+
         LcountPrev = Lcount;
         period = TIMER_A3->CCR[0] - prevPeriod;
         prevPeriod = TIMER_A3->CCR[0];
@@ -50,10 +52,10 @@ void TA3_N_IRQHandler(){
         //Calculate speed (assume robot is traveling straight, in units of 0.0001 cm)
         speed = Lcount * 219911 * 12000000 / (360 * period);
 
-        if(Odometer_isActive()){
-            uint32_t distanceTraveled = Lcount * 219911 / 360;
-            Odometer_add(distanceTraveled);
-        }
+//        if(Odometer_isActive()){
+//            uint32_t distanceTraveled = Lcount * 219911 / 360;
+//            Odometer_add(distanceTraveled);
+//        }
     }
 }
 
@@ -62,6 +64,8 @@ void TA3_0_IRQHandler() {//Tachometer_rightMotorISR(){
     
     Rcount++;
     if(Rcount - RcountPrev == 20 || odometerJustEnabled){
+        odometerJustEnabled = false;
+
         RcountPrev = Rcount;
         period = TIMER_A3->CCR[0] - prevPeriod;
         prevPeriod = TIMER_A3->CCR[0];
@@ -70,9 +74,10 @@ void TA3_0_IRQHandler() {//Tachometer_rightMotorISR(){
         speed = Rcount * 219911 * 12000000 / (360 * period);
 
         if(Odometer_isActive()){
-            uint32_t distanceTraveled = Rcount * 219911 / 360;
+            uint32_t distanceTraveled = (20 * 219911) / 360;
             Odometer_add(distanceTraveled);
         }
+
     }
 }
 

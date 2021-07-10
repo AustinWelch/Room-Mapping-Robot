@@ -71,7 +71,8 @@ void Motor_moveForwardDistance(uint16_t percentSpeed, uint16_t distance){
 
     PWM_init(percentSpeed);
 
-    Tachometer_countToTravel(distance * 10000 * 360 / 219911);
+    uint32_t convertedDistance = (distance * 10000 * 360) / 219911;
+    Tachometer_countToTravel(convertedDistance);
 
     Motor_stop();
 }
