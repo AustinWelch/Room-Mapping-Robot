@@ -1,47 +1,47 @@
+/*
+*   Some functions based on example library from https://github.com/pololu/opt3101-arduino
+*/
+
 #include "OPT3101.h"
 #include <i2c.h>
 #include <stdio.h>
 #include <time.h>
+#include "I2CB1.h"
 
 static const uint32_t reg80Default = 0x4e1e;
 uint8_t channelUsed = 0;
 bool timingGeneratorEnabled = false;
-uint8_t address = 0x5F;
+uint8_t address = 0x58;
+bool readyToSample = true;
 
 void OPT3101_writeReg(uint8_t reg, uint32_t value)
 {
-    I2C_masterSendStart(EUSCI_B3_BASE);
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, reg);
+    uint8_t buffer[] = {
+        reg,
+        value & 0xFF,
+        value >> 8 & 0xFF,
+        value >> 16 & 0xFF
+      };
 
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, value);
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, (value >> 8));
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, (value >> 16));
+      I2CB1_Send(address, buffer, sizeof(buffer));
 }
 
 uint32_t OPT3101_readReg(uint8_t reg)
 {
-    I2C_masterSendStart(EUSCI_B3_BASE);
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, reg);
-
-    I2C_masterReceiveStart(EUSCI_B3_BASE);
-    uint32_t recv = I2C_masterReceiveSingleByte(EUSCI_B3_BASE);
-    recv |= I2C_masterReceiveSingleByte(EUSCI_B3_BASE) << 8;
-    recv |= I2C_masterReceiveSingleByte(EUSCI_B3_BASE) << 16;
-
-    return recv;
+    uint8_t buffer[3];
+      I2CB1_Send(address, &reg, 1);
+      I2CB1_Recv(address, buffer, 3);
+      return buffer[0] + ((uint32_t)buffer[1] << 8) + ((uint32_t)buffer[2] << 16);
 }
 
 void OPT3101_init()
 {
-    eUSCI_I2C_MasterConfig i2c_config = {
-        .selectClockSource = EUSCI_B_I2C_CLOCKSOURCE_SMCLK, .i2cClk = 12000000, .dataRate = EUSCI_B_I2C_SET_DATA_RATE_400KBPS, .byteCounterThreshold = 3, .autoSTOPGeneration = EUSCI_B_I2C_NO_AUTO_STOP};
+    P6->DIR |= BIT4 | BIT5;
+    P6->OUT |= BIT4 | BIT5;
+    P6->SEL1 &= ~(BIT4 | BIT5);
+    P6->SEL0 |= BIT4 | BIT5;
 
-    P10->SEL1 &= ~(BIT1 | BIT2);
-    P10->SEL0 |= BIT1 | BIT2;
-
-    I2C_initMaster(EUSCI_B3_BASE, &i2c_config);
-    I2C_setSlaveAddress(EUSCI_B3_BASE, address);
-    I2C_enableModule(EUSCI_B3_BASE);
+    I2CB1_Init(30); //12Mhz / 30 = 400kHz
 
     OPT3101_reset();
     OPT3101_configure();
@@ -51,20 +51,20 @@ void OPT3101_reset()
 {
     timingGeneratorEnabled = false;
 
-    I2C_masterSendStart(EUSCI_B3_BASE);
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, 0);
-    I2C_masterSendSingleByte(EUSCI_B3_BASE, 1);
+    P6->OUT &= ~BIT3;
+    P6->DIR |= BIT3;
+    DelayMs(1);
+    P6->OUT |= BIT3;
 
     DelayMs(5);
 
     while (!(OPT3101_readReg(3) & (1 << 8)));
-
-    printf("OPT3101 reset successfully!");
 }
 
 void OPT3101_configure()
 {
     OPT3101_writeReg(0x89, 7000);     // TG_OVL_WINDOW_START = 7000
+    uint32_t test = OPT3101_readReg(0x89);
     OPT3101_writeReg(0x6e, 0x0a0000); // EN_TEMP_CONV = 1
     OPT3101_writeReg(0x50, 0x200101); // CLIP_MODE_FC = 1
                                       // CLIP_MODE_TEMP = 0
@@ -74,6 +74,7 @@ void OPT3101_configure()
     uint32_t reg2e = OPT3101_readReg(0x2e);
     reg2e = (reg2e & ~((uint32_t)7 << 9)) | (2 << 9);
     OPT3101_writeReg(0x2e, reg2e);
+    reg2e = OPT3101_readReg(0x2e);
 
     OPT3101_setMonoshotMode();
     OPT3101_setFrameTiming(128);
@@ -108,15 +109,10 @@ void OPT3101_setBrightnessAdaptive()
 
 void OPT3101_setMonoshotMode()
 {
-    // MONOSHOT_FZ_CLKCNT = default
-    // MONOSHOT_NUMFRAME = 1
-    // MONOSHOT_MODE = 3
+    // MONOSHOT_FZ_CLKCNT = default | MONOSHOT_NUMFRAME = 1 | MONOSHOT_MODE = 3
     OPT3101_writeReg(0x27, 0x26AC07);
 
-    // DIS_GLB_PD_OSC = 1
-    // DIS_GLB_PD_AMB_DAC = 1
-    // DIS_GLB_PD_REFSYS = 1
-    // (other fields default)
+    // DIS_GLB_PD_OSC = 1 | DIS_GLB_PD_AMB_DAC = 1 | DIS_GLB_PD_REFSYS = 1
     OPT3101_writeReg(0x76, 0x000121);
 
     // POWERUP_DELAY = 95
@@ -161,8 +157,11 @@ void OPT3101_enableDataReadyInterrupt()
 {
     //Set P6.2 to interrupt on data capture
     P6->DIR &= ~BIT2;
-    P6->IES &= ~BIT2;
     P6->IFG &= ~BIT2;
+    P6->IES &= ~BIT2;
+    P6->OUT &= ~BIT2;
+    P6->IE = BIT2;
+
 
     //Set GPIO1 on OPT board to be a data-ready signal
     uint32_t reg78 = OPT3101_readReg(0x78);
@@ -177,11 +176,18 @@ void OPT3101_enableDataReadyInterrupt()
     __NVIC_EnableIRQ(PORT6_IRQn);
 }
 
+bool OPT3101_readyToSample()
+{
+    return readyToSample;
+}
+
 void OPT3101_startSample()
 {
     if (!timingGeneratorEnabled)
         OPT3101_enableTimingGenerator();
     
+    readyToSample = false;
+
     // Set MONOSHOT_BIT to 0 before setting it to 1, as recommended here:
     // https://e2e.ti.com/support/sensors/f/1023/p/756598/2825649#2825649
     OPT3101_writeReg(0x00, 0x000000);
@@ -217,18 +223,20 @@ void OPT3101_readOutputRegs()
 
     ambient = reg0a >> 2 & 0x3FF; // AMB_DATA
 
-    //temperature = reg0a >> 12 & 0xFFF; // TMAIN
-
     amplitudes[channelUsed] = amplitude;
     distances[channelUsed] = distanceMillimeters;
 }
 
-void OPT3101_takeMeasurement(uint8_t channel){
+void OPT3101_takeMeasurement(uint8_t channel)
+{
     OPT3101_setChannel(channel);
     OPT3101_startSample();
 }
 
-void PORT6_IRQHandler(){
+void PORT6_IRQHandler()
+{
     P6->IFG = 0x00;
     OPT3101_readOutputRegs();
+
+    readyToSample = true;
 }

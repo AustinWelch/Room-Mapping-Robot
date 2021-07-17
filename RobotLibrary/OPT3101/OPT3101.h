@@ -28,6 +28,7 @@ void OPT3101_setFrameTiming(uint16_t subFrameCount);
 void OPT3101_enableTimingGenerator();
 void OPT3101_disableTimingGenerator();
 void OPT3101_enableDataReadyInterrupt();
+bool OPT3101_readyToSample();
 void OPT3101_startSample();
 bool OPT3101_isSampleDone();
 void OPT3101_readOutputRegs();
