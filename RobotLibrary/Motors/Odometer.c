@@ -1,7 +1,7 @@
 #include "Odometer.h"
 #include "Tachometer.h"
 
-uint32_t odo_distance = 0;
+int32_t odo_distance = 0;
 bool odometerActive = false;
 
 /*
@@ -24,7 +24,7 @@ void Odometer_add(uint32_t addedValue){
     odo_distance += addedValue;
 }
 
-uint32_t Odometer_value(){
+int32_t Odometer_value(){
     return odo_distance;
 }
 

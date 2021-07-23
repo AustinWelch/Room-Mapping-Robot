@@ -2,9 +2,9 @@
 
 extern bool odometerActive;
 
-extern void Odometer_start();
-extern void Odometer_stop();
-extern void Odometer_clear();
-extern void Odometer_add(uint32_t addedValue);
-extern uint32_t Odometer_value();
-extern bool Odometer_isActive();
+void Odometer_start();
+void Odometer_stop();
+void Odometer_clear();
+void Odometer_add(uint32_t addedValue);
+int32_t Odometer_value();
+bool Odometer_isActive();
