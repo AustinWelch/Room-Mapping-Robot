@@ -23,15 +23,15 @@
      P3.7 is active low left motor sleep
 */
 
-extern void Motor_initialize();
-extern void Motor_moveForwardTime(uint16_t percentSpeed, uint16_t time);
-extern void Motor_moveForwardDistance(uint16_t percentSpeed, uint16_t distance);
-extern void Motor_moveBackwardTime(uint16_t percentSpeed, uint16_t time);
-extern void Motor_moveBackwardDistance(uint16_t percentSpeed, uint16_t distance);
-extern void Motor_rotateLeft(uint16_t percentSpeed, uint16_t degrees);
-extern void Motor_rotateRight(uint16_t percentSpeed, uint16_t degrees);
-extern void Motor_stop();
-extern void PWM_init(uint16_t percentSpeed);
-extern void Motor_setBumperState(uint8_t setBumped);
-extern uint8_t Motor_getBumperState();
-extern void Motor_handleBump();
+void Motor_initialize();
+void Motor_moveForwardTime(uint16_t percentSpeed, uint16_t time);
+void Motor_moveForwardDistance(uint16_t percentSpeed, uint16_t distance);
+void Motor_moveBackwardTime(uint16_t percentSpeed, uint16_t time);
+void Motor_moveBackwardDistance(uint16_t percentSpeed, uint16_t distance);
+void Motor_rotateLeft(uint16_t percentSpeed, uint16_t degrees);
+void Motor_rotateRight(uint16_t percentSpeed, uint16_t degrees);
+void Motor_stop();
+void PWM_init(uint16_t percentSpeed);
+void Motor_setBumperState(uint8_t setBumped);
+uint8_t Motor_getBumperState();
+void Motor_handleBump();
