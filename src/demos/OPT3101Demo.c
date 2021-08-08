@@ -47,7 +47,7 @@ int main(){
         OPT3101_readOutputRegs();
         displayDistance(channel);
         channel = (channel + 1) % 3;
-        //DelayMs(50);
+        DelayMs(50);
     }
 }
 
