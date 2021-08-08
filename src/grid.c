@@ -4,7 +4,9 @@ int32_t cos_LUT[360] = { 10000, 9998, 9993, 9986, 9975, 9961, 9945, 9925, 9902, 
 6018, 6156, 6293, 6427, 6560, 6691, 6820, 6946, 7071, 7193, 7313, 7431, 7547, 7660, 7771, 7880, 7986, 8090, 8191, 8290, 8386, 8480, 8571, 8660, 8746, 8829, 8910, 8987, 9063, 9135, 9205, 9271, 9335, 9396, 9455, 9510, 9563,
 9612, 9659, 9703, 9743, 9781, 9816, 9848, 9876, 9902, 9925, 9945, 9961, 9975, 9986, 9993, 9998 };
 
-uint32_t blockSize = 10;
+int32_t blockSize = 10;
+uint32_t xMax = 0;
+uint32_t yMax = 0;
 robotPos robotPosition = { .direction = 0, .coordinates = { .x = 0, .y = 0 }};
 
 robotPos Grid_getRobotPos() {
@@ -17,7 +19,6 @@ void Grid_setRobotPos(robotPos newPos){
     robotPosition.direction = newPos.direction % 360;
 }
 
-// cos(x-90) == sin(x)
 coord Grid_convertDistanceToCoordinate(int32_t distance, uint32_t sensor) {
     uint32_t angle;
     if (sensor == LEFT)
@@ -35,11 +36,13 @@ coord Grid_convertDistanceToCoordinate(int32_t distance, uint32_t sensor) {
     return location;
 }
 
-uint32_t Grid_getBlockSize(){
+int32_t Grid_getBlockSize(){
     return blockSize;
 }
 
 void Grid_setBlockSize(uint32_t newSize){
     blockSize = newSize;
+    xMax = 200 * blockSize * 10000;
+    yMax = 200 * blockSize * 10000;
 }
 
