@@ -8,8 +8,8 @@
 #define RIGHT 2
 
 typedef struct detail_coord {
-    uint32_t x;
-    uint32_t y;
+    int32_t x;
+    int32_t y;
 } coord;
 
 typedef struct detail_robotPos {
@@ -19,10 +19,12 @@ typedef struct detail_robotPos {
 
 extern int32_t cos_LUT[360];
 
+extern uint32_t xMax, yMax;
+
 robotPos Grid_getRobotPos();
 void Grid_setRobotPos(robotPos newPos);
 coord Grid_convertDistanceToCoordinate(int32_t distance, uint32_t sensor);
-uint32_t Grid_getBlockSize();
+int32_t Grid_getBlockSize();
 void Grid_setBlockSize(uint32_t newSize);
 
 #endif
