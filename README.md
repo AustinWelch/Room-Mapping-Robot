@@ -2,9 +2,12 @@
 
 ### Summary
 
-This robot utilizes a OPT3101 TOF sensor in order to navigate and map its surroundings in a given room. It then displays the room on a Touch LCD mounted to the robot.
+This project utilizes the TI RSLK MAX robotics kit and an OPT3101 TOF sensor in order to navigate through and map out a room. It then displays the area on a LCD mounted to the robot.
 
 Designed by Austin Welch and David Hutchins
+
+### Demo Video
+https://youtu.be/LeQ4pwptnrw
 
 ### Code Structure
 
@@ -15,9 +18,7 @@ To effectively illustrate the room the positional data in the form of coordinate
 
 #### Initialization
 
-- The robot first initializes the Touch LCD and the OPT3101 sensor.
-
-- The robot then displays an option for cell size to the user. The cell size options are 5cm and 10cm and this cell size represents how a pixel on
+- The robot first displays an option for cell size to the user. The cell size options are 5cm and 10cm and this cell size represents how a pixel on
 the display will map to its surroundings. For example if the user selects 10cm each pixel will represent 10cm which means the 200x200 px box on the Touch LCD will be
 able to represent an area of 400 sq. meters (20m x 20m).
 
@@ -42,11 +43,10 @@ This loop runs until the robot is shut down or reset so that it is continually m
 
 
 
-
 ### Hardware Used:
+
+TI-RSLK MAX : http://www.ti.com/rslk
 
 Touch LCD BoosterPack BOOSTXL-K350QVG-S1 : https://www.ti.com/tool/BOOSTXL-K350QVG-S1
 
 3-Channel Wide FOV Time-of-Flight Distance Sensor for TI-RSLK MAX Using OPT3101 : https://www.pololu.com/product/3680
-
-TI-RSLK MAX : http://www.ti.com/rslk
