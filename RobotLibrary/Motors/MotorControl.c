@@ -111,7 +111,7 @@ void Motor_rotateLeft(uint16_t percentSpeed, uint16_t degrees){
 
     PWM_init(percentSpeed);
 
-    Tachometer_countToTravel((degrees - degrees/20) * 2);
+    Tachometer_countToTravel((degrees * 16) / 9);
 
     Motor_stop();
     Odometer_clear();
@@ -128,7 +128,7 @@ void Motor_rotateRight(uint16_t percentSpeed, uint16_t degrees){
 
     PWM_init(percentSpeed);
 
-    Tachometer_countToTravel((degrees - degrees/20) * 2);
+    Tachometer_countToTravel((degrees * 16) / 9);
 
     Motor_stop();
     Odometer_clear();
@@ -136,6 +136,7 @@ void Motor_rotateRight(uint16_t percentSpeed, uint16_t degrees){
 }
 
 void Motor_stop(){
+    PWM_init(0);
     TIMER_A0->CTL |= MC__STOP;
     P3->OUT &= ~(BIT6 | BIT7);
     Tachometer_disable();
@@ -145,8 +146,10 @@ void PWM_init(uint16_t percentSpeed){
     TIMER_A0->CTL |= TACLR;
 
     TIMER_A0->CCR[0] = 1000;
-    TIMER_A0->CCR[3] = 10 * percentSpeed / 2;
-    TIMER_A0->CCR[4] = 10 * (percentSpeed + 1) / 2;
+    //right
+    TIMER_A0->CCR[3] = 5 * percentSpeed + 2;
+    //left
+    TIMER_A0->CCR[4] = 5 * percentSpeed;
 
     TIMER_A0->CTL |= TASSEL__SMCLK;
 
