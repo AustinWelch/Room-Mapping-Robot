@@ -30,7 +30,7 @@ at the "bottom" of the room when you place the robot you will be able to represe
 This loop runs until the robot is shut down or reset so that it is continually mapping the space around it.
 
 - Movement
-  - The robot moves forward at 30% of its max speed.
+  - The robot moves forward at 30% of its max speed, a 30% duty cycle was chosen as it was a good balance of covering ground and taking measurements of the room.
 - Sensor Readings
   - The robot then polls the OPT3101's 3 channels to evaluate the distances of objects in front of it. These distances are stored for later use in the navigation
   algorithm.
@@ -41,7 +41,10 @@ This loop runs until the robot is shut down or reset so that it is continually m
   - The robot then uses a navigation algorithm to determine if it needs to adjust its course based on factors such as how close the nearest object is and whether
   the robot is still within the bounds of the predescribed area. The robot after any turns are made then updates it position with the new direction it faces.
 
+### Libraries Used:
 
+- DriverLib for the communication protocols and interrupts.
+- TI Graphics Library to interface with the BOOSTXL-K350QVG-S1.
 
 ### Hardware Used:
 
