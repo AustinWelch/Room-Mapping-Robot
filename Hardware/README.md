@@ -2,7 +2,7 @@
 
 ### Summary
 
-In our project we had to utilize a jumper wire to avoid a conflict between the motor PWM and the LCD backlight enable. To resolve this the conflicting pin was bent and the jumper wire connected to VCC was put into the LCD header. For PWM a 30% duty cycle was chosen as it was a good balance of covering ground and taking measurements of the room, and we used DriverLib for the communication protocols and interrupts.
+In our project we had to utilize a jumper wire to avoid a conflict between the motor PWM and the LCD backlight enable. To resolve this the conflicting pin was bent and the jumper wire connected to VCC was put into the LCD header. 
 
 ### Materials Used
 - 3-Channel Wide FOV Time-of-Flight Distance Sensor for TI-RSLK MAX Using OPT3101
