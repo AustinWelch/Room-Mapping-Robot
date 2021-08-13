@@ -1,0 +1,66 @@
+<!-- --COPYRIGHT--,BSD
+ *  Copyright (c) 2014, Texas Instruments Incorporated
+ *  All rights reserved.
+ * 
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ * 
+ *  *  Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ * 
+ *  *  Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ * 
+ *  *  Neither the name of Texas Instruments Incorporated nor the names of
+ *     its contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ * 
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ *  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ *  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ *  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ *  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ *  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ *  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * --/COPYRIGHT-- -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title></title></head><body><h1>Overview</h1><br>Image Reformer is a utility that converts images into C code for use with MSP430 Graphics Library. &nbsp; &nbsp;<br><br><h4>Why Convert?</h4>Most
+images are 24 Bits Per Pixel and over 1000 by 1000 pixels. &nbsp;Most
+MCU displays are 1, 2, 4 or 8 bits per pixel and sizes range from 96x96
+to QVGA (320x240). &nbsp;So in order to display the image a color and
+probably a size conversion is usually needed. &nbsp;Additionally, in
+order to save image decode time on a low powered MCU, converting the
+image to C code makes sense for faster display.<br><h3>Supported Image Input Formats</h3><table style="width: 100px; height: 112px;" border="2" cellpadding="2" cellspacing="2"><caption>Image Format</caption><tbody><tr><td>
+jpeg</td></tr><tr><td>gif</td></tr><tr><td>png</td></tr><tr><td>bmp</td></tr><tr><td>tif</td></tr>
+</tbody></table><br><h3>Conversion Output Formats</h3><table style="width: 738px; height: 32px;" border="1" cellpadding="2" cellspacing="2"><caption>Supported Conversion Formats</caption>
+<tbody><tr><td>Color Depth,</td><td> Max Colors,</td><td>Compressed,</td><td> Un-Compressed</td></tr><tr><td>1 bit per pixel</td><td>2</td><td>Yes RLE4</td><td>Yes</td></tr><tr><td>2 bits per pixel</td><td>4</td><td>Yes RLE4</td><td>Yes</td></tr><tr><td>4 bits per pixel</td><td>16</td><td>Yes RLE4</td><td>Yes</td></tr><tr><td>8 bits per pixel</td><td>256</td><td>Yes RLE8</td><td>Yes</td></tr>
+</tbody></table><br><br>
+
+
+<h1>Converting An Image</h1><br>From the Image Reformer main
+screen press the Open Image Icon or File-&gt;Open. &nbsp;This will
+bring up all the available image files in your root directory.
+&nbsp;Navigate to the location of the image to load and double click or
+select and press "Open". <br><br><img style="width: 783px; height: 587px;" alt="load Image" src="jar:file:ImageReformer.jar!/images/load_image.jpg"><br><h3>Types of Conversion</h3>Select the pixel depth conversion and size of the image to generate based on the display parameters you are using.<br><br><img style="width: 788px; height: 647px;" alt="conversion buttons" src="jar:file:ImageReformer.jar!/images/conversion_buttons.jpg"><br><h3>Compression</h3>Compressed
+images will use less memory to display and generally display faster but
+will require a bit more processing. &nbsp; Depending on the
+requirements compression is available. &nbsp;For 1,2,4 bits per pixel
+RLE4 compression is used. &nbsp;For 8 bits per pixel, RLE8 is used.
+&nbsp;<br><br>
+
+
+
+<h1>Generating Output</h1>The final step in converting an image
+is generating the .c file with the image data for inclusion by Graphics
+Library. &nbsp; Press the generate button and you will be prompted for
+a file to save under. &nbsp;This file is based on the input image name
+with a ".c" extension. &nbsp; In general this file should not need any
+editing and can be loaded as-is by Graphics Library.<br>
+
+</body></html>
